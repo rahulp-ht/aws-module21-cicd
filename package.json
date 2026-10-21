@@ -1,0 +1,12 @@
+
+{
+  "name": "aws-module21-cicd",
+  "version": "1.0.0",
+  "description": "Sample Node.js API for AWS CI/CD learning",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "node --check app.js"
+  }
+}
+
