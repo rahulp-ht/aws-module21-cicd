@@ -1,29 +1,43 @@
 
 version: 0.2
 
+env:
+  variables:
+    AWS_DEFAULT_REGION: ap-south-1
+    ECR_REPOSITORY_NAME: module21-app
+
 phases:
   install:
     runtime-versions:
       nodejs: 22
     commands:
-      - echo "Installing application dependencies"
       - npm install
 
   pre_build:
     commands:
       - echo "Running application tests"
       - npm test
+      - ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+      - REPOSITORY_URI=$ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ECR_REPOSITORY_NAME
+      - IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $REPOSITORY_URI
 
   build:
     commands:
-      - echo "Build completed successfully"
+      - echo "Building Docker image"
+      - docker build -t $REPOSITORY_URI:$IMAGE_TAG .
+      - docker tag $REPOSITORY_URI:$IMAGE_TAG $REPOSITORY_URI:latest
 
   post_build:
     commands:
-      - echo "CI build finished"
+      - echo "Pushing Docker images"
+      - docker push $REPOSITORY_URI:$IMAGE_TAG
+      - docker push $REPOSITORY_URI:latest
+      - echo "Image push completed"
 
 artifacts:
   files:
     - app.js
     - package.json
+    - Dockerfile
 
