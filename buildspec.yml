@@ -1,4 +1,3 @@
-
 version: 0.2
 
 env:
@@ -33,11 +32,14 @@ phases:
       - echo "Pushing Docker images"
       - docker push $REPOSITORY_URI:$IMAGE_TAG
       - docker push $REPOSITORY_URI:latest
-      - echo "Image push completed"
+      - echo "Creating ECS deployment artifact"
+      - printf '[{"name":"module21-app","imageUri":"%s"}]' "$REPOSITORY_URI:$IMAGE_TAG" > imagedefinitions.json
+      - cat imagedefinitions.json
+      - echo "Image push and deployment artifact creation completed"
 
 artifacts:
   files:
+    - imagedefinitions.json
     - app.js
     - package.json
     - Dockerfile
-
