@@ -14,7 +14,7 @@ const server = http.createServer((req, res) => {
   if (req.url === "/") {
     res.writeHead(200);
     return res.end(JSON.stringify({
-      message: "Hello from AWS Module 21!",
+      message: "Hello from AWS Module 21! CI/CD",
       service: "sample-api",
       version: "1.0.0"
     }));
