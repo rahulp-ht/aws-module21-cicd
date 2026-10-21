@@ -5,7 +5,7 @@ const crypto = require("crypto");
 
 const PORT = Number(process.env.PORT) || 3000;
 const APP_NAME = "module21-api";
-const VERSION = "2.0.0";
+const VERSION = "2.0.1";
 const START_TIME = Date.now();
 
 const metrics = {
